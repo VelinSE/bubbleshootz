@@ -1,3 +1,4 @@
+import haveCollided from './src/services/collisionDetector.js';
 import modelFactory from './src/services/modelFactory.js';
 
 const canvas = document.querySelector('#main');
@@ -19,6 +20,7 @@ const player = ModelFactory.createPlayer(canvasCenter, PLAYER_RADIUS, MODEL_COLO
 const projectiles = [];
 const enemies = [];
 let lastTimeEnemyAdded;
+let frameStamp;
 
 addEventListener('click', (event) => {
 
@@ -34,8 +36,16 @@ addEventListener('click', (event) => {
 const engine = (timestamp) => {
   context.clearRect(0, 0, canvas.width, canvas.height);
   
+  projectiles.slice().forEach((p, pIndex) => {
+    enemies.slice().forEach((e, eIndex) => {
+      if(haveCollided(p, e)) {
+        projectiles.splice(pIndex, 1);
+        enemies.splice(eIndex, 1);
+      }
+    })
+  })
+  
   player.draw(context);
-
   projectiles.forEach(p => p.animate(context));
   enemies.forEach(e => e.animate(context));
 
