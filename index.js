@@ -7,8 +7,8 @@ const context = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-const player = new Player(canvas.width / 2, canvas.height / 2, 30, 'blue');
-player.draw(context);
+const player = new Player(canvas.width / 2, canvas.height / 2, 30, '#00009e');
+const projectiles = [];
 
 addEventListener('click', (event) => {
   const { clientY, clientX } = event;
@@ -19,7 +19,19 @@ addEventListener('click', (event) => {
     y: Math.sin(slope),
   }
 
-  const projectile = new Projectile(player.x, player.y, 5, 'red', velocity);
-  projectile.animate(context);
+  const projectile = new Projectile(player.x, player.y, 5, '#ffa500', velocity);
+  projectiles.push(projectile);
 });
+
+const engine = () => {
+  context.clearRect(0, 0, canvas.width, canvas.height);
+  
+  player.draw(context);
+
+  projectiles.forEach(p => p.animate(context));
+
+  requestAnimationFrame(engine);
+}
+
+requestAnimationFrame(engine);
 

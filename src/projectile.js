@@ -11,9 +11,10 @@ class Projectile {
   }
 
   draw(context) {  
+    context.fillStyle = this.color;
+
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
-    context.fllStyle = this.color;
     context.closePath();
     context.fill();
   }
@@ -24,7 +25,6 @@ class Projectile {
     this.y += y;
 
     this.draw(context);
-    requestAnimationFrame(() => this.animate(context));
   }
 }
 
