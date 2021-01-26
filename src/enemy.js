@@ -1,4 +1,4 @@
-class Projectile {
+class Enemy {
   constructor(x, y, radius, color, direction) {
     this.x = x;
     this.y = y;
@@ -10,9 +10,9 @@ class Projectile {
     this.animate = this.animate.bind(this);
   }
 
-  draw(context) {  
+  draw(context) {
     context.fillStyle = this.color;
-
+    
     context.beginPath();
     context.arc(this.x, this.y, this.radius, 0, Math.PI * 2, true);
     context.closePath();
@@ -21,11 +21,11 @@ class Projectile {
 
   animate(context) {
     const { dx, dy } = this.direction;
-    this.x += dx * 4;
-    this.y += dy * 4;
+    this.x += dx;
+    this.y += dy;
 
     this.draw(context);
   }
 }
 
-export default Projectile
+export default Enemy;
