@@ -26,6 +26,10 @@ class Projectile {
 
     this.draw(context);
   }
+  
+  isWithinBounds(xBorder, yBorder) {
+    return this.x - this.radius >= 0 && this.y - this.radius >= 0 && this.x - this.radius <= xBorder && this.y - this.radius <= yBorder;
+  }
 }
 
 export default Projectile

@@ -21,6 +21,7 @@ const projectiles = [];
 const enemies = [];
 let lastTimeEnemyAdded;
 let frameStamp;
+let animationId;
 
 addEventListener('click', (event) => {
 
@@ -35,17 +36,27 @@ addEventListener('click', (event) => {
 
 const drawModels = () => {
   player.draw(context);
-  projectiles.forEach(p => p.animate(context));
+
+  projectiles.slice().forEach((p, index) => {
+    if(p.isWithinBounds(canvas.width, canvas.height)) {
+      p.animate(context);
+    } else {
+      projectiles.splice(index, 1);
+    }
+  });
+
+  console.log(projectiles.length);
+
   enemies.forEach(e => e.animate(context));
 }
 
 const collisionDetection = () => {
-  return enemies.slice().some((e, pIndex) => {
+  return enemies.slice().some((e, eIndex) => {
     if(haveCollided(e, player)) {
       return true;
     }
 
-    projectiles.slice().forEach((p, eIndex) => {
+    projectiles.slice().forEach((p, pIndex) => {
       if(haveCollided(p, e)) {
         projectiles.splice(pIndex, 1);
         enemies.splice(eIndex, 1);
@@ -57,11 +68,14 @@ const collisionDetection = () => {
 }
 
 const engine = (timestamp) => {
+  animationId = requestAnimationFrame(engine);
+
   context.clearRect(0, 0, canvas.width, canvas.height);
   
   if(collisionDetection()) {
-    alert("GAME OVER!");
+    cancelAnimationFrame(animationId);
   }
+
   drawModels();
 
   if(timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined)
@@ -69,9 +83,7 @@ const engine = (timestamp) => {
     enemies.push(ModelFactory.createEnemy(PLAYER_RADIUS / 1.5, MODEL_COLORS.Enemy));
     lastTimeEnemyAdded = timestamp;
   }
-
-  requestAnimationFrame(engine);
 }
 
-requestAnimationFrame(engine);
+animationId = requestAnimationFrame(engine);
 
