@@ -33,21 +33,36 @@ addEventListener('click', (event) => {
   projectiles.push(projectile);
 });
 
-const engine = (timestamp) => {
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  
-  projectiles.slice().forEach((p, pIndex) => {
-    enemies.slice().forEach((e, eIndex) => {
+const drawModels = () => {
+  player.draw(context);
+  projectiles.forEach(p => p.animate(context));
+  enemies.forEach(e => e.animate(context));
+}
+
+const collisionDetection = () => {
+  return enemies.slice().some((e, pIndex) => {
+    if(haveCollided(e, player)) {
+      return true;
+    }
+
+    projectiles.slice().forEach((p, eIndex) => {
       if(haveCollided(p, e)) {
         projectiles.splice(pIndex, 1);
         enemies.splice(eIndex, 1);
       }
-    })
-  })
+    });
+
+    return false;
+  });
+}
+
+const engine = (timestamp) => {
+  context.clearRect(0, 0, canvas.width, canvas.height);
   
-  player.draw(context);
-  projectiles.forEach(p => p.animate(context));
-  enemies.forEach(e => e.animate(context));
+  if(collisionDetection()) {
+    alert("GAME OVER!");
+  }
+  drawModels();
 
   if(timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined)
   {
