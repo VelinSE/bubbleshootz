@@ -8,11 +8,11 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const canvasCenter = { x: canvas.width / 2, y: canvas.height / 2 };
 
-const PLAYER_RADIUS = 30;
+const PLAYER_RADIUS = 15;
 const MODEL_COLORS = {
-  Player: '#00009e',
+  Player: '#fff',
   Projectile: '#ffa500',
-  Enemy: '#fff',
+  Enemy: () => `hsl(${Math.random() * 360}, 50%, 50%)`,
 }
 
 const ModelFactory = modelFactory(canvas);
@@ -27,7 +27,7 @@ addEventListener('click', (event) => {
 
   const projectile = ModelFactory.createProjectile(
     { x: event.clientX, y: event.clientY }, 
-    PLAYER_RADIUS / 5, 
+    PLAYER_RADIUS / 3, 
     MODEL_COLORS.Projectile,
   );
 
@@ -45,8 +45,6 @@ const drawModels = () => {
     }
   });
 
-  console.log(projectiles.length);
-
   enemies.forEach(e => e.animate(context));
 }
 
@@ -59,7 +57,10 @@ const collisionDetection = () => {
     projectiles.slice().forEach((p, pIndex) => {
       if(haveCollided(p, e)) {
         projectiles.splice(pIndex, 1);
-        enemies.splice(eIndex, 1);
+
+        if(e.onHit(p.radius * 2) <= 0) {
+          enemies.splice(eIndex, 1);
+        }
       }
     });
 
@@ -67,22 +68,26 @@ const collisionDetection = () => {
   });
 }
 
+const enemyGenerator = (timestamp) => {
+  if(timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined)
+  {
+    enemies.push(ModelFactory.createEnemy(PLAYER_RADIUS * 2, MODEL_COLORS.Enemy()));
+    lastTimeEnemyAdded = timestamp;
+  }
+}
+
 const engine = (timestamp) => {
   animationId = requestAnimationFrame(engine);
 
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  context.fillStyle = 'rgba(0, 0, 0, 0.1)';
+  context.fillRect(0, 0, canvas.width, canvas.height);
   
   if(collisionDetection()) {
     cancelAnimationFrame(animationId);
   }
 
   drawModels();
-
-  if(timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined)
-  {
-    enemies.push(ModelFactory.createEnemy(PLAYER_RADIUS / 1.5, MODEL_COLORS.Enemy));
-    lastTimeEnemyAdded = timestamp;
-  }
+  enemyGenerator(timestamp);
 }
 
 animationId = requestAnimationFrame(engine);

@@ -26,6 +26,12 @@ class Enemy {
 
     this.draw(context);
   }
+
+  onHit(damage) {
+    this.radius -= damage;
+
+    return this.radius;
+  }
 }
 
 export default Enemy;
