@@ -11,6 +11,6 @@
         "sourceType": "module"
     },
     "rules": {
-        "import/extensions": "never"
+        "import/extensions": 0
     }
 }

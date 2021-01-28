@@ -13,21 +13,21 @@ const MODEL_COLORS = {
   Player: '#fff',
   Projectile: '#ffa500',
   Enemy: () => `hsl(${Math.random() * 360}, 50%, 50%)`,
-}
+};
 
 const ModelFactory = modelFactory(canvas);
 const player = ModelFactory.createPlayer(canvasCenter, PLAYER_RADIUS, MODEL_COLORS.Player);
 const projectiles = [];
 const enemies = [];
+const particles = [];
 let lastTimeEnemyAdded;
-let frameStamp;
+// let frameStamp;
 let animationId;
 
-addEventListener('click', (event) => {
-
+window.addEventListener('click', (event) => {
   const projectile = ModelFactory.createProjectile(
-    { x: event.clientX, y: event.clientY }, 
-    PLAYER_RADIUS / 3, 
+    { x: event.clientX, y: event.clientY },
+    PLAYER_RADIUS / 3,
     MODEL_COLORS.Projectile,
   );
 
@@ -38,57 +38,67 @@ const drawModels = () => {
   player.draw(context);
 
   projectiles.slice().forEach((p, index) => {
-    if(p.isWithinBounds(canvas.width, canvas.height)) {
+    if (p.isWithinBounds(canvas.width, canvas.height)) {
       p.animate(context);
     } else {
       projectiles.splice(index, 1);
     }
   });
 
-  enemies.forEach(e => e.animate(context));
-}
-
-const collisionDetection = () => {
-  return enemies.slice().some((e, eIndex) => {
-    if(haveCollided(e, player)) {
-      return true;
+  particles.slice().forEach((pt, index) => {
+    if (pt.maxFramesReached()) {
+      particles.splice(index, 1);
+    } else {
+      pt.animate(context);
     }
-
-    projectiles.slice().forEach((p, pIndex) => {
-      if(haveCollided(p, e)) {
-        projectiles.splice(pIndex, 1);
-
-        if(e.onHit(p.radius * 2) <= 0) {
-          enemies.splice(eIndex, 1);
-        }
-      }
-    });
-
-    return false;
   });
-}
+
+  enemies.forEach((e) => e.animate(context));
+};
+
+const collisionDetection = () => enemies.slice().some((e, eIndex) => {
+  if (haveCollided(e, player)) {
+    return true;
+  }
+
+  projectiles.slice().forEach((p, pIndex) => {
+    if (haveCollided(p, e)) {
+      projectiles.splice(pIndex, 1);
+
+      if (e.onHit(p.radius * 2) <= 0) {
+        const nParticles = Math.random() * (50 - 20 + 1) + 10;
+        for (let i = 0; i < nParticles; i += 1) {
+          particles.push(
+            ModelFactory.createParticle(PLAYER_RADIUS / 6, e.color, { x: e.x, y: e.y }),
+          );
+        }
+        enemies.splice(eIndex, 1);
+      }
+    }
+  });
+
+  return false;
+});
 
 const enemyGenerator = (timestamp) => {
-  if(timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined)
-  {
+  if (timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined) {
     enemies.push(ModelFactory.createEnemy(PLAYER_RADIUS * 2, MODEL_COLORS.Enemy()));
     lastTimeEnemyAdded = timestamp;
   }
-}
+};
 
 const engine = (timestamp) => {
   animationId = requestAnimationFrame(engine);
 
   context.fillStyle = 'rgba(0, 0, 0, 0.1)';
   context.fillRect(0, 0, canvas.width, canvas.height);
-  
-  if(collisionDetection()) {
+
+  if (collisionDetection()) {
     cancelAnimationFrame(animationId);
   }
 
   drawModels();
   enemyGenerator(timestamp);
-}
+};
 
 animationId = requestAnimationFrame(engine);
-
