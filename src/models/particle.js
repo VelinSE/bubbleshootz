@@ -1,12 +1,12 @@
 class Particle {
-  constructor(x, y, radius, color, direction) {
+  constructor(x, y, radius, color, direction, parentRadius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
     this.color = color;
     this.direction = direction;
     this.alpha = 1;
-    this.multiplier = Math.random() * (4 + 1) + 1;
+    this.multiplier = Math.random() * (parentRadius / 10 + 1) + 2;
 
     this.draw = this.draw.bind(this);
     this.animate = this.animate.bind(this);

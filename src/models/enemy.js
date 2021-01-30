@@ -3,8 +3,10 @@ class Enemy {
     this.x = x;
     this.y = y;
     this.radius = radius;
+    this.initialRadius = radius;
     this.color = color;
     this.direction = direction;
+    this.multiplier = Math.random() * (5 / radius + 1) + 1;
 
     this.draw = this.draw.bind(this);
     this.animate = this.animate.bind(this);
@@ -21,8 +23,8 @@ class Enemy {
 
   animate(context) {
     const { dx, dy } = this.direction;
-    this.x += dx;
-    this.y += dy;
+    this.x += dx * this.multiplier;
+    this.y += dy * this.multiplier;
 
     this.draw(context);
   }

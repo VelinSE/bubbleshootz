@@ -65,9 +65,9 @@ const modelFactory = (canvas) => {
     return new Projectile(startingPosition.x, startingPosition.y, radius, color, direction);
   };
 
-  const createParticle = (radius, color, startingPosition) => {
+  const createParticle = (radius, color, startingPosition, enemyRadius) => {
     const randomDirection = getRandomDirection();
-    const randomRadius = Math.random() * (radius - 0.5 + 1) + 0.5;
+    const randomRadius = Math.random() * (radius - 0.2 + 1) + 0.2;
 
     return new Particle(
       startingPosition.x,
@@ -75,6 +75,7 @@ const modelFactory = (canvas) => {
       randomRadius,
       color,
       randomDirection,
+      enemyRadius,
     );
   };
 

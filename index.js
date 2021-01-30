@@ -53,7 +53,12 @@ const main = () => {
     const nParticles = Math.random() * (50 - 20 + 1) + 10;
     for (let i = 0; i < nParticles; i += 1) {
       particles.push(
-        ModelFactory.createParticle(PLAYER_RADIUS / 6, enemy.color, { x: enemy.x, y: enemy.y }),
+        ModelFactory.createParticle(
+          PLAYER_RADIUS / 6,
+          enemy.color,
+          { x: enemy.x, y: enemy.y },
+          enemy.initialRadius,
+        ),
       );
     }
     enemies.splice(enemyIndex, 1);
@@ -69,7 +74,7 @@ const main = () => {
       if (haveCollided(p, e)) {
         projectiles.splice(pIndex, 1);
 
-        if (e.onHit(p.radius * 2) <= 0) {
+        if (e.onHit(p.radius * 2) <= 7) {
           killEnemy(e, eIndex);
         }
       }
@@ -80,7 +85,12 @@ const main = () => {
 
   const enemyGenerator = (timestamp) => {
     if (timestamp - lastTimeEnemyAdded > 1000 || lastTimeEnemyAdded === undefined) {
-      enemies.push(ModelFactory.createEnemy(PLAYER_RADIUS * 2, MODEL_COLORS.Enemy()));
+      const randomRadius = Math.random() * (PLAYER_RADIUS + 1) + PLAYER_RADIUS;
+
+      enemies.push(ModelFactory.createEnemy(
+        randomRadius,
+        MODEL_COLORS.Enemy(),
+      ));
       lastTimeEnemyAdded = timestamp;
     }
   };
