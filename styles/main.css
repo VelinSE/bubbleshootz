@@ -12,7 +12,11 @@ html, body {
   --orange: #FF9C55;
   --red: #FF5555;
   --blue: #1AE8E8;
-} 
+}
+
+#main {
+  background-color: black;
+}
 
 .score {
   position: absolute;
@@ -28,7 +32,7 @@ html, body {
 }
 
 .hide {
-  display: none;
+  display: none !important;
 }
 
 .card {

@@ -20,22 +20,12 @@ const main = () => {
   const ModelFactory = modelFactory(canvas);
   const ScoreCounter = scoreCounter();
   const player = ModelFactory.createPlayer(canvasCenter, PLAYER_RADIUS, MODEL_COLORS.Player);
-  const projectiles = [];
-  const enemies = [];
-  const particles = [];
+  let projectiles = [];
+  let enemies = [];
+  let particles = [];
   let lastTimeEnemyAdded;
   // let frameStamp;
   let animationId;
-
-  window.addEventListener('click', (event) => {
-    const projectile = ModelFactory.createProjectile(
-      { x: event.clientX, y: event.clientY },
-      PLAYER_RADIUS / 3,
-      MODEL_COLORS.Projectile,
-    );
-
-    projectiles.push(projectile);
-  });
 
   const drawModels = () => {
     player.draw(context);
@@ -95,6 +85,38 @@ const main = () => {
     }
   };
 
+  const shootProjectile = (event) => {
+    const projectile = ModelFactory.createProjectile(
+      { x: event.clientX, y: event.clientY },
+      PLAYER_RADIUS / 3,
+      MODEL_COLORS.Projectile,
+    );
+
+    projectiles.push(projectile);
+  };
+
+  const attachGameControls = () => {
+    window.addEventListener('click', shootProjectile);
+  };
+
+  const detachGameControls = () => {
+    window.removeEventListener('click', shootProjectile);
+  };
+
+  const startGame = () => {
+    projectiles = [];
+    enemies = [];
+    particles = [];
+
+    ScoreCounter.updateScore(0);
+  };
+
+  const endGame = () => {
+    ScoreCounter.showModal();
+    cancelAnimationFrame(animationId);
+    detachGameControls();
+  };
+
   const engine = (timestamp) => {
     animationId = requestAnimationFrame(engine);
 
@@ -102,15 +124,24 @@ const main = () => {
     context.fillRect(0, 0, canvas.width, canvas.height);
 
     if (collisionDetection()) {
-      ScoreCounter.showModal();
-      cancelAnimationFrame(animationId);
+      endGame();
     }
 
     drawModels();
     enemyGenerator(timestamp);
   };
 
-  animationId = requestAnimationFrame(engine);
+  const startButton = document.querySelector('#start_button');
+
+  startButton.addEventListener('click', (event) => {
+    event.stopPropagation();
+
+    ScoreCounter.hideModal();
+    startGame();
+    attachGameControls();
+
+    animationId = requestAnimationFrame(engine);
+  });
 };
 
 main();
