@@ -1,3 +1,172 @@
 html, body {
   overflow: hidden;
+  font-family: "Lato", sans-serif;
+}
+
+:root {
+  --primary: #22D2A0;
+  --secondary: #192824;
+  --background: #192824;
+  --green: #1FC11B;
+  --yellow: #FFD913;
+  --orange: #FF9C55;
+  --red: #FF5555;
+  --blue: #1AE8E8;
+} 
+
+.score {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  z-index: 1;
+  color:var(--primary);
+  font-weight: bold;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.hide {
+  display: none;
+}
+
+.card {
+  background-color: var(--background);
+  display: block;
+  width: 300px;
+  min-height: 90px;
+  cursor: pointer;
+  padding: 15px;
+  margin: calc(50vh - 30px) auto 0 auto;
+  border: 3px solid var(--primary);
+  box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--green),
+        20px -20px 0 -3px var(--background), 20px -20px var(--yellow),
+        30px -30px 0 -3px var(--background), 30px -30px var(--orange),
+        40px -40px 0 -3px var(--background), 40px -40px var(--red);
+  color: var(--primary);
+}
+
+.card:hover {
+  animation: shadow-wave 1s ease infinite;
+}
+
+.score-modal {
+  position: absolute;
+  width: 400px;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  margin: 0;
+}
+
+
+@keyframes shadow-wave {
+  0% {
+    border: 3px solid var(--red);
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--green),
+      20px -20px 0 -3px var(--background), 20px -20px var(--yellow),
+      30px -30px 0 -3px var(--background), 30px -30px var(--orange),
+      40px -40px 0 -3px var(--background), 40px -40px var(--red);
+  }
+  20% {
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--primary),
+      20px -20px 0 -3px var(--background), 20px -20px var(--green),
+      30px -30px 0 -3px var(--background), 30px -30px var(--yellow),
+      40px -40px 0 -3px var(--background), 40px -40px var(--orange);
+  }
+  40% {
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--red),
+      20px -20px 0 -3px var(--background), 20px -20px var(--primary),
+      30px -30px 0 -3px var(--background), 30px -30px var(--green),
+      40px -40px 0 -3px var(--background), 40px -40px var(--yellow);
+  }
+  60% {
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--orange),
+      20px -20px 0 -3px var(--background), 20px -20px var(--red),
+      30px -30px 0 -3px var(--background), 30px -30px var(--primary),
+      40px -40px 0 -3px var(--background), 40px -40px var(--green);
+  }
+  80% {
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--yellow),
+      20px -20px 0 -3px var(--background), 20px -20px var(--orange),
+      30px -30px 0 -3px var(--background), 30px -30px var(--red),
+      40px -40px 0 -3px var(--background), 40px -40px var(--primary);
+  }
+  100% {
+    border: 3px solid var(--primary);
+    box-shadow: 10px -10px 0 -3px var(--background), 10px -10px var(--green),
+      20px -20px 0 -3px var(--background), 20px -20px var(--yellow),
+      30px -30px 0 -3px var(--background), 30px -30px var(--orange),
+      40px -40px 0 -3px var(--background), 40px -40px var(--red);
+  }
+  
+}
+
+.card p {
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.card h2 {
+  font-size: 2rem;
+  font-family: "Archivo Black", "Archivo", sans-serif;
+  font-weight: normal;
+  margin: 0;
+  margin-bottom: 2em;
+}
+
+.corner-button {
+  letter-spacing: 0.02rem;
+  cursor: pointer;
+  background: transparent;
+  border: 0.5rem solid currentColor;
+  padding: 1rem 1.5rem;
+  font-size: 2.2rem;
+  color: var(--primary);
+  position: relative;
+  transition: color 0.3s;
+}
+.corner-button:hover {
+  color: var(--blue);
+}
+.corner-button:hover::before {
+  width: 0;
+}
+.corner-button:hover::after {
+  height: 0;
+}
+.corner-button:active {
+  border-width: 0.25rem;
+}
+.corner-button span {
+  position: relative;
+  z-index: 2;
+  text-transform: uppercase;
+}
+.corner-button::before, .corner-button::after {
+  content: "";
+  position: absolute;
+  background: var(--background);
+  z-index: 1;
+  transition: all 0.3s;
+}
+.corner-button::before {
+  width: calc(100% - 3rem);
+  height: calc(101% + 1rem);
+  top: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.corner-button::after {
+  height: calc(100% - 3rem);
+  width: calc(101% + 1rem);
+  left: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
 }
